@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Users Management</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+
+background:#071320;
+color:white;
+display:flex;
+
+}
+
+/* Sidebar */
+
+.sidebar{
+width:260px;
+height:100vh;
+position:fixed;
+left:0;
+top:0;
+background:#0d1d34;
+border-right:1px solid #204d86;
+}
+
+.logo{
+text-align:center;
+padding:25px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo i{
+font-size:55px;
+color:#2d8cff;
+}
+
+.logo h2{
+margin-top:12px;
+font-size:22px;
+line-height:34px;
+}
+
+.sidebar ul {
+margin-top:20px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+padding:18px 28px;
+font-size:18px;
+transition:.3s;
+margin:8px 12px;
+border-radius:12px;
+}
+
+.sidebar ul a i{
+width:35px;
+}
+
+.sidebar a:hover{
+background:#2d8cff;
+}
+
+.active{
+background:#2d8cff;
+}
+
+
+/* Main */
+
+.main{
+margin-left:260px;
+width:calc(100% - 260px);
+
+}
+
+/* Header */
+
+.header{
+
+height:90px;
+
+background:#162b49;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 40px;
+
+border-bottom:1px solid #204a84;
+
+}
+
+.header h1{
+
+font-size:32px;
+
+}
+
+.profile{
+
+display:flex;
+align-items:center;
+gap:15px;
+
+}
+
+.profile i{
+
+font-size:34px;
+color:#2d8cff;
+
+}
+
+/* Content */
+
+.content{
+
+padding:35px;
+
+}
+
+/* Cards */
+
+.cards{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:25px;
+
+margin-bottom:30px;
+
+}
+
+.card{
+
+background:#162b49;
+
+border:1px solid #2d8cff;
+
+border-radius:18px;
+
+padding:30px;
+
+text-align:center;
+
+}
+
+.card i{
+
+font-size:42px;
+
+margin-bottom:15px;
+
+color:#2d8cff;
+
+}
+
+.card h2{
+
+font-size:38px;
+
+margin:10px 0;
+
+}
+
+.card p{
+
+color:#d6d6d6;
+
+font-size:18px;
+
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<h2>Insider Threat Detector</h2>
+
+</div>
+
+<ul>
+
+        <li>
+            <a href="/dashboard" >
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/activity">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Activity Logs</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/alerts">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Alerts</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/usb_history" >
+                <i class="fa-solid fa-usb"></i>
+                <span>USB History</span>
+            </a>
+        </li>
+            
+        <li>
+            <a href="/file_history" >
+                <i class="fa-solid fa-folder-open"></i>
+                <span>File History</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/reports">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Reports</span>
+            </a>
+        </li> 
+            
+        <li>
+            <a href="/users" class="active">
+                <i class="fa-solid fa-users"></i>
+                <span>Users</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/settings">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+
+    </ul>
+
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<div class="header">
+
+<h1>Users Management</h1>
+
+<div class="profile">
+
+<i class="fa-solid fa-circle-user"></i>
+
+<div>
+
+<b>{{username}}</b><br>
+
+{{role}}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="content">
+
+<!-- Summary Cards -->
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-users"></i>
+
+<h2>{{total_users}}</h2>
+
+<p>Total Users</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-user-shield"></i>
+
+<h2>{{admins}}</h2>
+
+<p>Administrators</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-user"></i>
+
+<h2>{{employees}}</h2>
+
+<p>Employees</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-user-check"></i>
+
+<h2>{{active_users}}</h2>
+
+<p>Active Users</p>
+
+</div>
+
+</div>
+
+<!-- Search -->
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;flex-wrap:wrap;gap:15px;">
+
+<input
+
+type="text"
+
+id="searchInput"
+
+placeholder="Search User..."
+
+style="
+
+width:320px;
+
+height:45px;
+
+background:#132846;
+
+border:1px solid #2d8cff;
+
+color:white;
+
+border-radius:10px;
+
+padding:0 15px;
+
+outline:none;
+
+">
+
+<div>
+
+<a href="/add_user">
+
+<button style="
+
+height:45px;
+
+padding:0 20px;
+
+background:#2d8cff;
+
+border:none;
+
+color:white;
+
+border-radius:10px;
+
+cursor:pointer;
+
+margin-right:10px;
+
+">
+
+<i class="fa-solid fa-user-plus"></i>
+
+Add User
+
+</button>
+
+</a>
+
+<button
+
+onclick="exportUsers()"
+
+style="
+
+height:45px;
+
+padding:0 20px;
+
+background:#16a34a;
+
+border:none;
+
+color:white;
+
+border-radius:10px;
+
+cursor:pointer;
+
+">
+
+<i class="fa-solid fa-download"></i>
+
+Export CSV
+
+</button>
+
+</div>
+
+</div>
+
+<!-- Users Table -->
+
+<div style="background:#162b49;border:1px solid #2d8cff;border-radius:18px;padding:25px;overflow:auto;">
+
+<h2 style="margin-bottom:20px;">
+
+<i class="fa-solid fa-users"></i>
+
+Registered Users
+
+</h2>
+
+<table id="userTable" style="width:100%;border-collapse:collapse;">
+
+<thead>
+
+<tr style="background:#23406b;">
+
+<th style="padding:15px;text-align:left;">ID</th>
+
+<th style="padding:15px;text-align:left;">Full Name</th>
+
+<th style="padding:15px;text-align:left;">Username</th>
+
+<th style="padding:15px;text-align:left;">Email</th>
+
+<th style="padding:15px;text-align:left;">Department</th>
+
+<th style="padding:15px;text-align:left;">Role</th>
+
+<th style="padding:15px;text-align:center;">Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for user in users %}
+<tr>
+
+<td style="padding:15px;">{{user.id}}</td>
+
+<td style="padding:15px;">{{user.fullname}}</td>
+
+<td style="padding:15px;">{{user.username}}</td>
+
+<td style="padding:15px;">{{user.email}}</td>
+
+<td style="padding:15px;">{{user.department}}</td>
+
+<td style="padding:15px;">
+
+{% if user.role=="Admin" %}
+
+<span style="background:#ff4d4d;padding:6px 12px;border-radius:20px;font-size:13px;">
+
+{{user.role}}
+
+</span>
+
+{% else %}
+
+<span style="background:#2d8cff;padding:6px 12px;border-radius:20px;font-size:13px;">
+
+{{user.role}}
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td style="padding:15px;text-align:center;">
+
+<a href="/edit_user/{{user.id}}">
+
+<button style="background:#f39c12;border:none;padding:8px 14px;border-radius:8px;color:white;cursor:pointer;">
+
+<i class="fa-solid fa-pen"></i>
+
+</button>
+
+</a>
+
+<a href="/delete_user/{{user.id}}"
+
+onclick="return confirm('Delete this user?')">
+
+<button style="background:#e74c3c;border:none;padding:8px 14px;border-radius:8px;color:white;cursor:pointer;margin-left:8px;">
+
+<i class="fa-solid fa-trash"></i>
+
+</button>
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+//=========================
+// SEARCH USERS
+//=========================
+
+const search=document.getElementById("searchInput");
+
+search.addEventListener("keyup",function(){
+
+let filter=this.value.toLowerCase();
+
+let rows=document.querySelectorAll("#userTable tbody tr");
+
+rows.forEach(function(row){
+
+let text=row.innerText.toLowerCase();
+
+row.style.display=text.includes(filter) ? "" : "none";
+
+});
+
+});
+
+//=========================
+// EXPORT CSV
+//=========================
+
+function exportUsers(){
+
+let csv=[];
+
+let rows=document.querySelectorAll("#userTable tr");
+
+rows.forEach(function(row){
+
+let cols=row.querySelectorAll("th,td");
+
+let data=[];
+
+cols.forEach(function(col){
+
+data.push(col.innerText);
+
+});
+
+csv.push(data.join(","));
+
+});
+
+let blob=new Blob([csv.join("\n")],{type:"text/csv"});
+
+let link=document.createElement("a");
+
+link.href=window.URL.createObjectURL(blob);
+
+link.download="users.csv";
+
+link.click();
+
+}
+
+</script>
+
+</body>
+
+</html>

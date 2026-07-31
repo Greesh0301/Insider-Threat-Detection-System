@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Employee Dashboard</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#071320;
+color:white;
+display:flex;
+}
+
+/* Sidebar */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:270px;
+height:100vh;
+background:#11233d;
+border-right:1px solid #204a84;
+}
+
+.logo{
+padding:25px;
+text-align:center;
+}
+
+.logo i{
+font-size:55px;
+color:#2d8cff;
+margin-bottom:10px;
+}
+
+.logo h2{
+font-size:22px;
+line-height:34px;
+}
+
+.sidebar ul{
+list-style:none;
+margin-top:25px;
+}
+
+.sidebar ul li{
+margin:12px 18px;
+}
+
+.sidebar ul li a{
+display:flex;
+align-items:center;
+gap:15px;
+padding:14px 18px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+transition:.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:#2d8cff;
+}
+
+.sidebar ul li i{
+width:25px;
+}
+
+/* Main */
+
+.main{
+margin-left:270px;
+width:calc(100% - 270px);
+}
+
+/* Header */
+
+.header{
+
+height:90px;
+
+background:#162b49;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 40px;
+
+border-bottom:1px solid #204a84;
+
+}
+
+.header h1{
+
+font-size:30px;
+
+}
+
+.profile{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.profile i{
+
+font-size:36px;
+
+color:#2d8cff;
+
+}
+
+/* Content */
+
+.content{
+
+padding:35px;
+
+}
+
+/* Cards */
+
+.cards{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:25px;
+
+margin-bottom:35px;
+
+}
+
+.card{
+
+background:#162b49;
+
+border:1px solid #2d8cff;
+
+border-radius:18px;
+
+padding:30px;
+
+text-align:center;
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 0 20px rgba(45,140,255,.35);
+
+}
+
+.card i{
+
+font-size:42px;
+
+color:#2d8cff;
+
+margin-bottom:15px;
+
+}
+
+.card h2{
+
+font-size:34px;
+
+margin:10px 0;
+
+}
+
+.card p{
+
+font-size:17px;
+
+color:#d8d8d8;
+
+}
+
+/* Responsive */
+
+@media(max-width:1100px){
+
+.cards{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:700px){
+
+.sidebar{
+
+width:75px;
+
+}
+
+.sidebar h2{
+
+display:none;
+
+}
+
+.sidebar span{
+
+display:none;
+
+}
+
+.main{
+
+margin-left:75px;
+
+width:calc(100% - 75px);
+
+}
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+<i class="fa-solid fa-user-shield"></i>
+
+<h2>Employee Panel</h2>
+
+</div>
+
+<ul>
+
+<li>
+
+<a href="/employee_dashboard" class="active">
+
+<i class="fa-solid fa-house"></i>
+
+<span>Dashboard</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/employee_activity">
+
+<i class="fa-solid fa-list"></i>
+
+<span>My Activities</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/employee_alerts">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+<span>My Alerts</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/employee_profile">
+
+<i class="fa-solid fa-user"></i>
+
+<span>My Profile</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/change_password">
+
+<i class="fa-solid fa-key"></i>
+
+<span>Change Password</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/logout">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+<span>Logout</span>
+
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<div class="header">
+
+<h1>
+
+Welcome,
+
+{{username}}
+
+</h1>
+
+<div class="profile">
+
+<i class="fa-solid fa-circle-user"></i>
+
+<div>
+
+<b>{{username}}</b><br>
+
+{{role}}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="content">
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-chart-line"></i>
+
+<h2>{{risk_score}}</h2>
+
+<p>My Risk Score</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-file-lines"></i>
+
+<h2>{{activities}}</h2>
+
+<p>My Activities</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-bell"></i>
+
+<h2>{{alerts}}</h2>
+
+<p>My Alerts</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-clock"></i>
+
+<h3 id="clock"></h3>
+
+<p>Current Time</p>
+
+<hr style="margin:15px 0;border-color:#2d8cff;">
+
+<h4>{{last_login}}</h4>
+
+<p>Last Login</p>
+
+</div>
+
+</div>
+<!-- Dashboard Grid -->
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:25px;">
+
+<!-- Activity Chart -->
+
+<div style="background:#162b49;border:1px solid #2d8cff;border-radius:18px;padding:25px;">
+
+<h2 style="margin-bottom:20px;">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Weekly Activity
+
+</h2>
+
+<canvas id="activityChart" height="120"></canvas>
+
+</div>
+
+<!-- Latest Alerts -->
+
+<div style="background:#162b49;border:1px solid #2d8cff;border-radius:18px;padding:25px;">
+
+<h2 style="margin-bottom:20px;">
+
+<i class="fa-solid fa-bell"></i>
+
+Latest Alerts
+
+</h2>
+
+{% if alerts_list %}
+
+{% for alert in alerts_list %}
+
+<div style="background:#10233c;padding:15px;border-left:4px solid #ff4d4d;border-radius:10px;margin-bottom:15px;">
+
+<h4>{{alert.alert_type}}</h4>
+
+<p style="margin-top:8px;color:#d7d7d7;">
+
+{{alert.description}}
+
+</p>
+
+<small style="color:#2d8cff;">
+
+{{alert.date}} {{alert.time}}
+
+</small>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div style="text-align:center;padding:30px;color:#999;">
+
+<i class="fa-solid fa-circle-check"
+
+style="font-size:50px;color:#2ecc71;margin-bottom:15px;"></i>
+
+<p>No Alerts Found</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<br><br>
+
+<!-- Recent Activity -->
+
+<div style="background:#162b49;border:1px solid #2d8cff;border-radius:18px;padding:25px;">
+
+<h2 style="margin-bottom:20px;">
+
+<i class="fa-solid fa-list"></i>
+
+Recent Activities
+
+</h2>
+
+<div style="overflow-x:auto;">
+
+<table id="activityTable"
+
+style="width:100%;border-collapse:collapse;">
+
+<thead>
+
+<tr style="background:#23406b;">
+
+<th style="padding:15px;text-align:left;">Activity</th>
+
+<th style="padding:15px;text-align:left;">Details</th>
+
+<th style="padding:15px;text-align:left;">Risk</th>
+
+<th style="padding:15px;text-align:left;">Date</th>
+
+<th style="padding:15px;text-align:left;">Time</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for activity in recent %}
+
+<tr style="border-bottom:1px solid #27486d;">
+
+<td style="padding:15px;">
+
+{{activity.activity}}
+
+</td>
+
+<td style="padding:15px;">
+
+{{activity.details}}
+
+</td>
+
+<td style="padding:15px;">
+
+{% if activity.risk_level=="High" %}
+
+<span style="background:#ff4d4d;padding:6px 12px;border-radius:20px;">
+
+High
+
+</span>
+
+{% elif activity.risk_level=="Medium" %}
+
+<span style="background:#ff9800;padding:6px 12px;border-radius:20px;">
+
+Medium
+
+</span>
+
+{% else %}
+
+<span style="background:#2ecc71;padding:6px 12px;border-radius:20px;">
+
+Low
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td style="padding:15px;">
+
+{{activity.date}}
+
+</td>
+
+<td style="padding:15px;">
+
+{{activity.time}}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+<br>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+//==========================
+// Weekly Activity Chart
+//==========================
+
+const ctx=document.getElementById("activityChart");
+
+new Chart(ctx,{
+
+type:"line",
+
+data:{
+
+labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+
+datasets:[{
+
+label:"My Activities",
+
+data:[5,8,4,9,6,7,10],
+
+borderColor:"#2d8cff",
+
+backgroundColor:"rgba(45,140,255,.15)",
+
+fill:true,
+
+tension:.4,
+
+borderWidth:3,
+
+pointRadius:5,
+
+pointBackgroundColor:"#2d8cff"
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+plugins:{
+
+legend:{
+
+labels:{
+
+color:"white"
+
+}
+
+}
+
+},
+
+scales:{
+
+x:{
+
+ticks:{
+
+color:"white"
+
+},
+
+grid:{
+
+color:"#27486d"
+
+}
+
+},
+
+y:{
+
+beginAtZero:true,
+
+ticks:{
+
+color:"white"
+
+},
+
+grid:{
+
+color:"#27486d"
+
+}
+
+}
+
+}
+
+}
+
+});
+
+
+//==========================
+// Live Clock
+//==========================
+
+function updateClock(){
+
+const now=new Date();
+
+document.getElementById("clock").innerHTML=
+
+now.toLocaleDateString()+"<br>"+
+
+now.toLocaleTimeString();
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+
+//==========================
+// Auto Refresh Every 10 Seconds
+//==========================
+
+// Uncomment if required
+
+// setInterval(function(){
+
+// location.reload();
+
+// },10000);
+
+</script>
+
+<!-- Footer -->
+
+<div style="margin-top:35px;text-align:center;color:#8ca8c8;">
+
+<p>
+
+© 2026 Insider Threat Detector
+
+</p>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Activities</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#071320;
+color:white;
+}
+
+
+/* Sidebar */
+
+.sidebar{
+
+position:fixed;
+left:0;
+top:0;
+width:260px;
+height:100vh;
+background:#11233d;
+border-right:1px solid #204a84;
+
+}
+
+
+.logo{
+
+text-align:center;
+padding:25px;
+
+}
+
+
+.logo i{
+
+font-size:50px;
+color:#2d8cff;
+
+}
+
+
+.logo h2{
+
+margin-top:10px;
+
+}
+
+
+
+.sidebar ul{
+
+list-style:none;
+margin-top:20px;
+
+}
+
+
+.sidebar ul li{
+
+margin:12px;
+
+}
+
+
+.sidebar ul li a{
+
+display:flex;
+gap:15px;
+align-items:center;
+padding:14px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+
+}
+
+
+
+.sidebar ul li a:hover,
+.active{
+
+background:#2d8cff;
+
+}
+
+
+
+/* Main */
+
+
+.main{
+
+margin-left:260px;
+
+}
+
+
+
+.header{
+
+height:90px;
+background:#162b49;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 35px;
+border-bottom:1px solid #204a84;
+
+}
+
+
+.header h1{
+
+font-size:28px;
+
+}
+
+
+.profile i{
+
+font-size:35px;
+color:#2d8cff;
+
+}
+
+
+
+/* Content */
+
+
+.content{
+
+padding:30px;
+
+}
+
+
+
+/* Cards */
+
+
+.cards{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-bottom:30px;
+
+}
+
+
+
+.card{
+
+background:#162b49;
+border:1px solid #2d8cff;
+padding:25px;
+border-radius:15px;
+text-align:center;
+
+}
+
+
+.card i{
+
+font-size:35px;
+color:#2d8cff;
+
+}
+
+
+.card h2{
+
+font-size:30px;
+margin:10px;
+
+}
+
+
+
+/* Table Box */
+
+
+.box{
+
+background:#162b49;
+border:1px solid #2d8cff;
+border-radius:15px;
+padding:25px;
+
+}
+
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+
+th{
+
+background:#23406b;
+padding:15px;
+text-align:left;
+
+}
+
+
+td{
+
+padding:15px;
+border-bottom:1px solid #27486d;
+
+}
+
+
+
+.risk-high{
+
+background:#ff4d4d;
+padding:6px 12px;
+border-radius:20px;
+
+}
+
+
+.risk-medium{
+
+background:#ff9800;
+padding:6px 12px;
+border-radius:20px;
+
+}
+
+
+.risk-low{
+
+background:#2ecc71;
+padding:6px 12px;
+border-radius:20px;
+
+}
+
+
+
+/* Responsive */
+
+
+@media(max-width:900px){
+
+.sidebar{
+
+width:70px;
+
+}
+
+
+.sidebar h2,
+.sidebar span{
+
+display:none;
+
+}
+
+
+.main{
+
+margin-left:70px;
+
+}
+
+
+.cards{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+}
+
+
+@media(max-width:600px){
+
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- Sidebar -->
+
+
+<div class="sidebar">
+
+
+<div class="logo">
+
+<i class="fa-solid fa-user-shield"></i>
+
+<h2>Employee Panel</h2>
+
+</div>
+
+
+
+<ul>
+
+
+<li>
+
+<a href="/employee_dashboard">
+
+<i class="fa fa-home"></i>
+
+<span>Dashboard</span>
+
+</a>
+
+</li>
+
+
+<li>
+
+<a href="/employee_activity" class="active">
+
+<i class="fa fa-list"></i>
+
+<span>My Activities</span>
+
+</a>
+
+</li>
+
+
+<li>
+
+<a href="/employee_alerts">
+
+<i class="fa fa-bell"></i>
+
+<span>My Alerts</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/employee_profile">
+
+<i class="fa fa-user"></i>
+
+<span>Profile</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/change_password">
+
+<i class="fa fa-key"></i>
+
+<span>Password</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/logout">
+
+<i class="fa fa-sign-out"></i>
+
+<span>Logout</span>
+
+</a>
+
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+<!-- Main -->
+
+
+<div class="main">
+
+
+<div class="header">
+
+
+<h1>
+
+My Activities
+
+</h1>
+
+
+<div class="profile">
+
+<i class="fa fa-circle-user"></i>
+
+<b>{{username}}</b>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="content">
+
+
+<!-- Summary Cards -->
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<i class="fa fa-list"></i>
+
+<h2>{{total}}</h2>
+
+<p>Total Activities</p>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fa fa-triangle-exclamation"></i>
+
+<h2>{{high}}</h2>
+
+<p>High Risk</p>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fa fa-warning"></i>
+
+<h2>{{medium}}</h2>
+
+<p>Medium Risk</p>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fa fa-check-circle"></i>
+
+<h2>{{low}}</h2>
+
+<p>Low Risk</p>
+
+</div>
+
+
+</div>
+
+
+
+
+<!-- Activity Table -->
+
+
+<div class="box">
+
+
+<h2 style="margin-bottom:20px;">
+
+<i class="fa fa-clock"></i>
+
+Activity Logs
+
+</h2>
+
+
+
+<div style="overflow-x:auto;">
+
+
+<table>
+
+
+<tr>
+
+<th>Activity</th>
+
+<th>Details</th>
+
+<th>Risk Level</th>
+
+<th>Date</th>
+
+<th>Time</th>
+
+</tr>
+
+
+
+{% for activity in activities %}
+
+
+<tr>
+
+
+<td>{{activity.activity}}</td>
+
+
+<td>{{activity.details}}</td>
+
+
+<td>
+
+
+{% if activity.risk_level=="High" %}
+
+<span class="risk-high">
+High
+</span>
+
+
+{% elif activity.risk_level=="Medium" %}
+
+<span class="risk-medium">
+Medium
+</span>
+
+
+{% else %}
+
+<span class="risk-low">
+Low
+</span>
+
+
+{% endif %}
+
+
+</td>
+
+
+<td>{{activity.date}}</td>
+
+
+<td>{{activity.time}}</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Employee Profile</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+
+body{
+
+background:#071320;
+color:white;
+
+}
+
+
+/* Sidebar */
+
+.sidebar{
+
+position:fixed;
+left:0;
+top:0;
+width:260px;
+height:100vh;
+background:#11233d;
+border-right:1px solid #204a84;
+
+}
+
+
+.logo{
+
+text-align:center;
+padding:25px;
+
+}
+
+
+.logo i{
+
+font-size:50px;
+color:#2d8cff;
+
+}
+
+
+.logo h2{
+
+margin-top:10px;
+
+}
+
+
+
+.sidebar ul{
+
+list-style:none;
+margin-top:20px;
+
+}
+
+
+.sidebar ul li{
+
+margin:12px;
+
+}
+
+
+.sidebar ul li a{
+
+display:flex;
+align-items:center;
+gap:15px;
+padding:14px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+
+}
+
+
+.sidebar ul li a:hover,
+.active{
+
+background:#2d8cff;
+
+}
+
+
+
+/* Main */
+
+
+.main{
+
+margin-left:260px;
+
+}
+
+
+
+.header{
+
+height:90px;
+background:#162b49;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 35px;
+border-bottom:1px solid #204a84;
+
+}
+
+
+.header h1{
+
+font-size:28px;
+
+}
+
+
+.profile i{
+
+font-size:35px;
+color:#2d8cff;
+
+}
+
+
+
+
+/* Content */
+
+
+.content{
+
+padding:35px;
+
+}
+
+
+
+.profile-box{
+
+max-width:700px;
+background:#162b49;
+border:1px solid #2d8cff;
+border-radius:18px;
+padding:35px;
+align-content: center;
+}
+
+
+
+.profile-icon{
+
+text-align:center;
+
+}
+
+
+.profile-icon i{
+
+font-size:90px;
+color:#2d8cff;
+
+}
+
+
+
+.form-group{
+
+margin-top:20px;
+
+}
+
+
+
+label{
+
+display:block;
+margin-bottom:8px;
+color:#d7d7d7;
+
+}
+
+
+
+input{
+
+width:100%;
+padding:14px;
+background:#10233c;
+border:1px solid #27486d;
+border-radius:10px;
+color:white;
+font-size:16px;
+
+}
+
+
+
+button{
+
+margin-top:25px;
+padding:14px 30px;
+background:#2d8cff;
+border:none;
+color:white;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+
+}
+
+
+button:hover{
+
+background:#176dcc;
+
+}
+
+
+
+/* Responsive */
+
+
+@media(max-width:900px){
+
+.sidebar{
+
+width:70px;
+
+}
+
+
+.sidebar h2,
+.sidebar span{
+
+display:none;
+
+}
+
+
+.main{
+
+margin-left:70px;
+
+}
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- Sidebar -->
+
+
+<div class="sidebar">
+
+
+<div class="logo">
+
+<i class="fa-solid fa-user-shield"></i>
+
+<h2>Employee Panel</h2>
+
+</div>
+
+
+
+<ul>
+
+
+<li>
+
+<a href="/employee_dashboard">
+
+<i class="fa fa-home"></i>
+
+<span>Dashboard</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/employee_activity">
+
+<i class="fa fa-list"></i>
+
+<span>My Activities</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/employee_alerts">
+
+<i class="fa fa-bell"></i>
+
+<span>My Alerts</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/employee_profile" class="active">
+
+<i class="fa fa-user"></i>
+
+<span>Profile</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/change_password">
+
+<i class="fa fa-key"></i>
+
+<span>Password</span>
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/logout">
+
+<i class="fa fa-sign-out"></i>
+
+<span>Logout</span>
+
+</a>
+
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+<!-- Main -->
+
+
+<div class="main">
+
+
+
+<div class="header">
+
+
+<h1>
+My Profile
+</h1>
+
+
+<div class="profile">
+
+<i class="fa fa-circle-user"></i>
+
+<b>{{user.username}}</b>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="content">
+
+
+<div class="profile-box">
+
+
+<div class="profile-icon">
+
+<i class="fa fa-user-circle"></i>
+
+<h2 style="margin-top:15px;">
+Employee Information
+</h2>
+
+</div>
+
+
+
+
+<form method="POST">
+
+
+<div class="form-group">
+
+<label>Username</label>
+
+<input type="text"
+value="{{user.username}}"
+readonly>
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Full Name</label>
+
+<input type="text"
+name="fullname"
+value="{{user.fullname}}">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Email</label>
+
+<input type="email"
+name="email"
+value="{{user.email}}">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Department</label>
+
+<input type="text"
+name="department"
+value="{{user.department}}">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Role</label>
+
+<input type="text"
+value="{{user.role}}"
+readonly>
+
+</div>
+
+
+
+<button type="submit">
+
+<i class="fa fa-save"></i>
+
+Update Profile
+
+</button>
+
+
+</form>
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</body>
+
+</html>

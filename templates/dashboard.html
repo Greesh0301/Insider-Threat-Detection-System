@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Insider Threat Detector</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#071321;
+color:white;
+overflow-x:hidden;
+}
+
+/*======================
+SIDEBAR
+=======================*/
+
+.sidebar{
+width:260px;
+height:100vh;
+position:fixed;
+left:0;
+top:0;
+background:#0d1d34;
+border-right:1px solid #204d86;
+overflow-y:auto;
+overflow-x:hidden;
+}
+
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#2d8cff;
+    border-radius:20px;
+}
+
+.logo{
+text-align:center;
+padding:25px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo i{
+font-size:55px;
+color:#2d8cff;
+}
+
+.logo h2{
+margin-top:12px;
+font-size:22px;
+line-height:34px;
+}
+
+.sidebar ul {
+margin-top:20px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+padding:18px 28px;
+font-size:18px;
+transition:.3s;
+margin:8px 12px;
+border-radius:12px;
+}
+
+.sidebar ul a i{
+width:35px;
+}
+
+.sidebar a:hover{
+background:#2d8cff;
+}
+
+.active{
+background:#2d8cff;
+}
+
+/*======================
+MAIN
+=======================*/
+
+.main{
+margin-left:260px;
+min-height:100vh;
+}
+
+/*======================
+TOPBAR
+=======================*/
+
+.topbar{
+
+height:80px;
+background:#132846;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:20px 35px;
+border-bottom:1px solid #245996;
+}
+
+.topbar h1{
+font-size:34px;
+}
+
+.search{
+width:330px;
+height:45px;
+padding:15px;
+border:none;
+outline:none;
+border-radius:10px;
+font-size:18px;
+}
+
+/*======================
+CONTENT
+=======================*/
+
+.content{
+padding:35px;
+}
+
+/*======================
+CARDS CONTAINER
+=======================*/
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:25px;
+}
+
+/*======================
+CARD
+=======================*/
+
+.card{
+background:#132846;
+border:1px solid #285b9b;
+border-radius:20px;
+padding:30px;
+text-align:center;
+transition:.3s;
+cursor:pointer;
+
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 0 25px rgba(0,150,255,.25);
+}
+
+.card i{
+font-size:50px;
+margin-bottom:20px;
+}
+
+.card h3{
+font-size:18px;
+margin-bottom:15px;
+
+}
+
+.card h1{
+font-size:46px;
+}
+
+/* Icon Colors */
+
+.blue{
+
+color:#2d8cff;
+
+}
+
+.green{
+
+color:#2ecc71;
+
+}
+
+.red{
+
+color:#ff4d4d;
+
+}
+
+.orange{
+
+color:#ff9f1c;
+
+}
+
+/*======================
+TABLE SECTION
+=======================*/
+
+.table-box{
+
+margin-top:45px;
+
+background:#132846;
+
+padding:25px;
+
+border-radius:20px;
+
+}
+
+.table-box h2{
+
+font-size:24px;
+
+margin-bottom:20px;
+
+}
+
+/*======================
+RESPONSIVE
+=======================*/
+
+@media(max-width:1200px){
+
+.cards{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:900px){
+
+.sidebar{
+width:80px;
+
+}
+
+.logo h2{
+
+display:none;
+
+}
+
+.sidebar a{
+
+text-align:center;
+
+padding:19px;
+
+}
+
+.sidebar a span{
+
+display:none;
+
+}
+
+.main{
+
+margin-left:80px;
+
+}
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+.topbar h1{
+
+font-size:30px;
+
+}
+
+.search{
+
+width:180px;
+
+}
+
+}
+.card{
+
+background:#152844;
+
+border:1px solid #245796;
+
+border-radius:20px;
+
+padding:35px 20px;
+
+text-align:center;
+
+transition:.35s;
+
+cursor:pointer;
+
+}
+
+.card:hover{
+
+transform:translateY(-10px);
+
+box-shadow:0 0 30px rgba(0,140,255,.35);
+
+}
+
+.card i{
+
+font-size:45px;
+
+margin-bottom:18px;
+
+}
+
+.card h3{
+
+font-size:18px;
+
+margin-bottom:15px;
+
+font-weight:bold;
+
+}
+
+.card h1{
+
+font-size:48px;
+
+font-weight:bold;
+
+}
+
+.blue{
+
+color:#2d8cff;
+
+}
+
+.green{
+
+color:#2ecc71;
+
+}
+
+.red{
+
+color:#ff4d4d;
+
+}
+
+.orange{
+
+color:#ffa31a;
+
+}
+/*======================
+TABLE
+=======================*/
+
+.table-box{
+
+background:#132846;
+
+padding:25px;
+
+border-radius:20px;
+
+margin-top:45px;
+
+border:1px solid #204b7d;
+
+overflow-x:auto;
+
+}
+
+.table-box h2{
+
+margin-bottom:20px;
+
+font-size:22px;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+thead{
+
+background:#223f67;
+
+}
+
+thead th{
+
+padding:18px;
+
+text-align:left;
+
+font-size:18px;
+
+}
+
+tbody tr{
+
+border-bottom:1px solid rgba(255,255,255,.05);
+
+transition:.3s;
+
+}
+
+tbody tr:hover{
+
+background:#1a365c;
+
+}
+
+tbody td{
+
+padding:18px;
+
+font-size:17px;
+
+}
+
+.risk{
+
+padding:7px 18px;
+
+border-radius:30px;
+
+font-weight:bold;
+
+font-size:14px;
+
+display:inline-block;
+
+}
+
+.low{
+
+background:#1d6d39;
+
+color:white;
+
+}
+
+.medium{
+
+background:#f39c12;
+
+color:white;
+
+}
+
+.high{
+
+background:#d63031;
+
+color:white;
+
+}
+/*=====================
+BOTTOM SECTION
+======================*/
+
+.bottom-section{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:25px;
+
+margin-top:35px;
+
+}
+
+.chart-box{
+
+background:#132846;
+
+padding:25px;
+
+border-radius:20px;
+
+border:1px solid #275693;
+
+}
+
+.chart-box h2{
+
+margin-bottom:20px;
+
+}
+
+.status-section{
+
+display:grid;
+
+grid-template-columns:2fr 1fr 1fr;
+
+gap:25px;
+
+margin-top:30px;
+
+}
+
+.status-box{
+
+background:#132846;
+
+padding:25px;
+
+border-radius:20px;
+
+border:1px solid #275693;
+
+}
+
+.status-box h2{
+
+margin-bottom:20px;
+
+}
+
+.status-box ul{
+
+list-style:none;
+
+}
+
+.status-box li{
+
+padding:12px 0;
+
+border-bottom:1px solid rgba(255,255,255,.05);
+
+font-size:16px;
+
+}
+
+.status-box h1{
+
+font-size:60px;
+
+text-align:center;
+
+margin-top:20px;
+
+margin-bottom:15px;
+
+}
+
+.status-box p{
+
+text-align:center;
+
+color:#c9c9c9;
+
+}
+
+/* Responsive */
+
+@media(max-width:1000px){
+
+.bottom-section{
+
+grid-template-columns:1fr;
+
+}
+
+.status-section{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<h2>
+
+Insider Threat<br>
+
+Detector
+
+</h2>
+
+</div>
+
+<ul>
+
+        <li>
+            <a href="/dashboard"  class="active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/activity">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Activity Logs</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/alerts">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Alerts</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/usb_history" >
+                <i class="fa-solid fa-usb"></i>
+                <span>USB History</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/file_history" >
+                <i class="fa-solid fa-folder-open"></i>
+                <span>File History</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/reports">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Reports</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/users">
+                <i class="fa-solid fa-users"></i>
+                <span>Users</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/settings">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Dashboard</h1>
+
+<input
+type="text"
+class="search"
+placeholder="Search Activity...">
+
+</div>
+
+<div class="content">
+
+<!-- Cards start here -->
+
+<div class="cards">
+
+    <!-- Total Users -->
+
+    <div class="card">
+
+        <i class="fa-solid fa-users blue"></i>
+
+        <h3>Total Users</h3>
+
+        <h1>{{data.users}}</h1>
+
+    </div>
+
+    <!-- Active Users -->
+
+    <div class="card">
+
+        <i class="fa-solid fa-user-check green"></i>
+
+        <h3>Active Users</h3>
+
+        <h1>{{data.logins}}</h1>
+
+    </div>
+
+    <!-- Threats -->
+
+    <div class="card">
+
+        <i class="fa-solid fa-triangle-exclamation red"></i>
+
+        <h3>Threats</h3>
+
+        <h1>{{data.alerts}}</h1>
+
+    </div>
+
+    <!-- Activity Logs -->
+
+    <div class="card">
+
+        <i class="fa-solid fa-file-lines orange"></i>
+
+        <h3>Activity Logs</h3>
+
+        <h1>{{data.files}}</h1>
+
+    </div>
+
+</div>
+<div class="table-box">
+
+    <h2>Recent Activity</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>User</th>
+                <th>Activity</th>
+                <th>Date & Time</th>
+                <th>Risk</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="activityTable">
+
+        {% for row in data.activities %}
+
+            <tr>
+
+                <td>{{row.username}}</td>
+
+                <td>{{row.activity}}</td>
+
+                <td>{{row.date}} {{row.time}}</td>
+
+                <td>
+
+                    {% if row.risk_level=="High" %}
+
+                    <span class="risk high">
+
+                    High
+
+                    </span>
+
+                    {% elif row.risk_level=="Medium" %}
+
+                    <span class="risk medium">
+
+                    Medium
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="risk low">
+
+                    Low
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+    <div class="bottom-section">
+
+    <!-- Threat Trend -->
+
+    <div class="chart-box">
+
+        <h2>Threat Trend</h2>
+
+        <canvas id="threatChart"></canvas>
+
+    </div>
+
+    <!-- User Activity -->
+
+    <div class="chart-box">
+
+        <h2>User Activity</h2>
+
+        <canvas id="userChart"></canvas>
+
+    </div>
+
+</div>
+
+<div class="status-section">
+
+    <!-- Alerts -->
+
+    <div class="status-box">
+
+        <h2>Recent Alerts</h2>
+
+        <ul>
+
+            {% for alert in alerts %}
+
+            <li>
+
+                <i class="fa-solid fa-triangle-exclamation red"></i>
+
+                {{alert.description}}
+
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <!-- USB -->
+
+    <div class="status-box">
+
+        <h2>USB Monitor</h2>
+
+        <h1 class="blue">{{usb}}</h1>
+
+        <p>USB Devices Detected</p>
+
+    </div>
+
+    <!-- File -->
+
+    <div class="status-box">
+
+        <h2>File Monitor</h2>
+
+        <h1 class="green">{{files}}</h1>
+
+        <p>File Activities</p>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<script>
+
+const search=document.querySelector(".search");
+
+search.addEventListener("keyup",function(){
+
+let filter=this.value.toLowerCase();
+
+let rows=document.querySelectorAll("#activityTable tr");
+
+rows.forEach(function(row){
+
+let text=row.innerText.toLowerCase();
+
+if(text.indexOf(filter)>-1)
+
+row.style.display="";
+
+else
+
+row.style.display="none";
+
+});
+
+});
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const threatChart=new Chart(
+
+document.getElementById("threatChart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+
+datasets:[{
+
+label:"Threats",
+
+data:[2,4,5,3,8,6,4],
+
+borderColor:"#2d8cff",
+
+backgroundColor:"rgba(45,140,255,.25)",
+
+fill:true,
+
+tension:.4
+
+}]
+
+}
+
+});
+
+const userChart=new Chart(
+
+document.getElementById("userChart"),
+
+{
+
+type:"bar",
+
+data:{
+
+labels:["Login","USB","Files","Alerts"],
+
+datasets:[{
+
+data:[18,4,9,2],
+
+backgroundColor:[
+
+"#2d8cff",
+
+"#2ecc71",
+
+"#ff9f1c",
+
+"#ff4d4d"
+
+]
+
+}]
+
+}
+
+});
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Threat Reports</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+display:flex;
+background:#071320;
+color:white;
+}
+
+/* ================= Sidebar ================= */
+
+.sidebar{
+width:260px;
+height:100vh;
+position:fixed;
+left:0;
+top:0;
+background:#0d1d34;
+border-right:1px solid #204d86;
+overflow-y:auto;
+overflow-x:hidden;
+}
+
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#2d8cff;
+    border-radius:20px;
+}
+
+
+.logo{
+text-align:center;
+padding:25px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo i{
+font-size:55px;
+color:#2d8cff;
+}
+
+.logo h2{
+margin-top:12px;
+font-size:22px;
+line-height:34px;
+}
+
+.sidebar ul {
+margin-top:20px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+padding:18px 28px;
+font-size:18px;
+transition:.3s;
+margin:8px 12px;
+border-radius:12px;
+}
+
+.sidebar ul a i{
+width:35px;
+}
+
+.sidebar a:hover{
+background:#2d8cff;
+}
+
+.active{
+background:#2d8cff;
+}
+
+
+/* ================= Main ================= */
+
+.main{
+margin-left:260px;
+width:calc(100% - 260px);
+ height:100vh;
+    overflow-y:auto;
+}
+
+/* ================= Header ================= */
+
+.header{
+height:80px;
+background:#132846;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 35px;
+border-bottom:1px solid #245996;
+}
+
+.header h1{
+font-size:34px;
+}
+
+.profile{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.profile i{
+font-size:36px;
+color:#2d8cff;
+}
+
+/* ================= Content ================= */
+
+.content{
+padding:35px;
+}
+
+/* ================= Cards ================= */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:25px;
+margin-bottom:30px;
+}
+
+.card{
+background:#132846;
+padding:25px;
+border-radius:15px;
+border:1px solid #285b9b;
+text-align:center;
+transition:.3s;
+}
+
+.card i{
+font-size:40px;
+margin-bottom:15px;
+color:#2d8cff;
+}
+
+.card h2{
+font-size:36px;
+margin:10px 0;
+}
+
+.card p{
+font-size:18px;
+color:#ccc;
+}
+
+/* ================= Chart ================= */
+
+.chart-box{
+background:#162b49;
+padding:25px;
+border-radius:18px;
+border:1px solid #2d8cff;
+margin-bottom:35px;
+}
+
+.chart-box h2{
+margin-bottom:20px;
+}
+
+/* ================= Table ================= */
+
+.table-box{
+background:#132846;
+padding:25px;
+border-radius:15px;
+border:1px solid #2d8cff;
+overflow-x:auto;
+}
+
+.table-box h2{
+margin-bottom:20px;
+font-size: 24px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+
+}
+
+th{
+background:#23406b;
+padding:15px;
+text-align:left;
+}
+
+td{
+padding:14px;
+border-bottom:1px solid #294b77;
+}
+
+tr:hover{
+background:#1d365b;
+}
+
+.download{
+margin-top:20px;
+text-align:right;
+}
+
+.download button{
+background:#2d8cff;
+border:none;
+padding:12px 22px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+font-size:16px;
+}
+
+.download button:hover{
+background:#1678f3;
+}
+
+@media(max-width:1000px){
+
+.cards{
+grid-template-columns:repeat(2,1fr);
+
+}
+}
+
+@media(max-width:800px){
+
+.sidebar{
+width:80px;
+}
+
+.sidebar h2{
+display:none;
+}
+
+.sidebar span{
+display:none;
+}
+
+.main{
+margin-left:80px;
+width:calc(100% - 80px);
+}
+
+.cards{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<h2>Insider Threat Detector</h2>
+
+</div>
+
+<ul>
+
+        <li>
+            <a href="/dashboard">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/activity">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Activity Logs</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/alerts">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Alerts</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/usb_history" >
+                <i class="fa-solid fa-usb"></i>
+                <span>USB History</span>
+            </a>
+        </li>
+            
+        <li>
+            <a href="/file_history" >
+                <i class="fa-solid fa-folder-open"></i>
+                <span>File History</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/reports" class="active">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Reports</span>
+            </a>
+        </li> 
+            
+        <li>
+            <a href="/users">
+                <i class="fa-solid fa-users"></i>
+                <span>Users</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/settings">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+
+    </ul>
+
+
+</div>
+
+<div class="main">
+
+<div class="header">
+
+<h1>Threat Reports</h1>
+
+<div class="profile">
+
+<i class="fa-solid fa-circle-user"></i>
+
+<div>
+
+<b>{{username}}</b><br>
+
+{{role}}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="content">
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-users"></i>
+
+<h2>{{total_users}}</h2>
+
+<p>Total Users</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-file-lines"></i>
+
+<h2>{{total_logs}}</h2>
+
+<p>Activity Logs</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+<h2>{{total_alerts}}</h2>
+
+<p>Threat Alerts</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-shield-virus"></i>
+
+<h2>{{high_risk}}</h2>
+
+<p>High Risk Events</p>
+
+</div>
+</div>
+
+<!-- Report Chart -->
+
+<div class="chart-box">
+
+<h2>Weekly Threat Analysis</h2>
+
+<canvas id="reportChart"></canvas>
+
+</div>
+
+<!-- Reports Table -->
+
+<div class="table-box">
+    
+
+<h2>Generated Reports </h2>
+<div class="download">
+
+<button onclick="exportCSV()">
+
+<i class="fa-solid fa-download"></i>
+
+Export CSV
+
+</button>
+
+<button onclick="window.print()">
+
+<i class="fa-solid fa-print"></i>
+
+Print
+
+</button>
+
+</div>
+<table id="reportTable">
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>User</th>
+<th>Report Type</th>
+<th>Risk</th>
+<th>Date</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for report in reports %}
+
+<tr>
+
+<td>{{report.id}}</td>
+
+<td>{{report.username}}</td>
+
+<td>{{report.report_type}}</td>
+
+<td>{{report.risk_level}}</td>
+
+<td>{{report.date}}</td>
+
+<td>{{report.status}}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx=document.getElementById("reportChart");
+
+new Chart(ctx,{
+
+type:"bar",
+
+data:{
+
+labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+
+datasets:[{
+
+label:"Threat Reports",
+
+data:[10,15,8,18,12,20,14],
+
+backgroundColor:"#2d8cff",
+
+borderRadius:8
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+plugins:{
+
+legend:{
+
+labels:{
+
+color:"white"
+
+}
+
+}
+
+},
+
+scales:{
+
+x:{
+
+ticks:{color:"white"},
+
+grid:{color:"#23406b"}
+
+},
+
+y:{
+
+ticks:{color:"white"},
+
+grid:{color:"#23406b"}
+
+}
+
+}
+
+}
+
+});
+
+function exportCSV(){
+
+let csv=[];
+
+let rows=document.querySelectorAll("#reportTable tr");
+
+rows.forEach(function(row){
+
+let cols=row.querySelectorAll("td,th");
+
+let data=[];
+
+cols.forEach(function(col){
+
+data.push(col.innerText);
+
+});
+
+csv.push(data.join(","));
+
+});
+
+let blob=new Blob([csv.join("\n")],{type:"text/csv"});
+
+let link=document.createElement("a");
+
+link.download="Threat_Report.csv";
+
+link.href=window.URL.createObjectURL(blob);
+
+link.click();
+
+}
+
+</script>
+
+</body>
+
+</html>
