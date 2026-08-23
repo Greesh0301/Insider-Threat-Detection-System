@@ -157,8 +157,3 @@ def start_usb_monitor():
         usb_thread.start()
 
         print("USB Monitor Started")
-
-
-
-
-
