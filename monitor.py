@@ -50,14 +50,21 @@ def _now():
     return now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
 
 
-def log_activity(username, activity, details, risk="Low"):
-    date, clock = _now()
+def log_activity(username, activity, description, risk):
     conn = _db()
+
     conn.execute("""
-        INSERT INTO activity_logs
-        (username,activity,details,risk_level,date,time)
-        VALUES (?,?,?,?,?,?)
-    """, (username, activity, details, risk, date, clock))
+        INSERT INTO activities
+        (username, activity, description, risk, activity_time)
+        VALUES (?, ?, ?, ?, ?)
+    """, (
+        username,
+        activity,
+        description,
+        risk,
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ))
+
     conn.commit()
     conn.close()
 
@@ -106,39 +113,160 @@ def update_risk(username):
 
 
 def log_login(username, status):
-    """Save a login attempt and detect a late successful login."""
+    """Save login and generate alerts based on login rules."""
+
     now = datetime.now()
     ip = socket.gethostbyname(socket.gethostname())
     device = platform.node()
 
     conn = _db()
+
+    # Save login record
     conn.execute("""
         INSERT INTO login_logs
-        (username,login_time,ip_address,device_name,status)
-        VALUES (?,?,?,?,?)
-    """, (username, now.strftime("%Y-%m-%d %H:%M:%S"), ip, device, status))
+        (username, login_time, ip_address, device_name, status)
+        VALUES (?, ?, ?, ?, ?)
+    """, (
+        username,
+        now.strftime("%Y-%m-%d %H:%M:%S"),
+        ip,
+        device,
+        status
+    ))
+
     conn.commit()
-    conn.close()
+
+
+    # ================= SUCCESS LOGIN =================
 
     if status == "Success":
-        log_activity(username, "Login", "User logged into the system", "Low")
 
-        if now.hour < 6 or now.hour > 22:
-            add_alert(username, "Late Login",
-                      "Login outside office hours", "Medium")
-    else:
-        # Alert only when the third failed attempt is reached.
-        conn = _db()
-        count = conn.execute("""
-            SELECT COUNT(*) FROM login_logs
-            WHERE username=? AND status='Failed'
+        # Count previous failed attempts
+        failed = conn.execute("""
+            SELECT COUNT(*)
+            FROM login_logs
+            WHERE username=?
+            AND status='Failed'
         """, (username,)).fetchone()[0]
-        conn.close()
 
-        if count == 3:
-            add_alert(username, "Failed Login",
-                      "Three failed login attempts detected", "High")
 
+        # Login after 9 PM = HIGH
+        if now.hour >= 21:
+
+            log_activity(
+                username,
+                "Late Login",
+                "User logged in after 9 PM",
+                "High"
+            )
+
+            add_alert(
+                username,
+                "Late Login",
+                "User logged in after office hours",
+                "High"
+            )
+
+
+        # 3 or more failed attempts before login = HIGH
+        elif failed >= 3:
+
+            log_activity(
+                username,
+                "Failed Login Pattern",
+                "Successful login after multiple failed attempts",
+                "High"
+            )
+
+            add_alert(
+                username,
+                "Suspicious Login",
+                "Three or more failed login attempts detected",
+                "High"
+            )
+
+
+        # 2 failed attempts before login = MEDIUM
+        elif failed == 2:
+
+            log_activity(
+                username,
+                "Failed Login Pattern",
+                "Successful login after two failed attempts",
+                "Medium"
+            )
+
+            add_alert(
+                username,
+                "Suspicious Login",
+                "Two failed login attempts detected",
+                "Medium"
+            )
+
+
+        # Normal login
+        else:
+
+            log_activity(
+                username,
+                "Login",
+                "User logged into the system",
+                "Low"
+            )
+
+
+    # ================= FAILED LOGIN =================
+
+    else:
+
+        failed = conn.execute("""
+            SELECT COUNT(*)
+            FROM login_logs
+            WHERE username=?
+            AND status='Failed'
+        """, (username,)).fetchone()[0]
+
+
+        # 2 Failed Attempts = Medium
+        if failed == 2:
+
+            log_activity(
+                username,
+                "Failed Login",
+                "Two failed login attempts",
+                "Medium"
+            )
+
+            add_alert(
+                username,
+                "Failed Login",
+                "Two failed login attempts detected",
+                "Medium"
+            )
+
+
+        # 3+ Failed Attempts = High
+        elif failed >= 3:
+
+            log_activity(
+                username,
+                "Failed Login",
+                "Multiple failed login attempts",
+                "High"
+            )
+
+            add_alert(
+                username,
+                "Failed Login",
+                "Three or more failed login attempts detected",
+                "High"
+            )
+
+
+    conn.close()
+
+
+    # Update user risk score
     update_risk(username)
 
 

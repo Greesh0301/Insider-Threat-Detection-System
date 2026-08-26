@@ -112,50 +112,6 @@ def employee_dashboard():
     )
 
 
-# ---------------- PASSWORD RESET ----------------
-@app.route("/forgot_password", methods=["GET", "POST"])
-def forgot_password():
-    if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-
-        conn = get_db()
-        user = conn.execute("""
-            SELECT username FROM users
-            WHERE username=? AND email=?
-        """, (username, email)).fetchone()
-        conn.close()
-
-        if user:
-            session["reset_user"] = username
-            return redirect("/reset_password")
-
-        flash("Invalid Username or Email")
-
-    return render_template("forgot_password.html")
-
-
-@app.route("/reset_password", methods=["GET", "POST"])
-def reset_password():
-    if "reset_user" not in session:
-        return redirect("/forgot_password")
-
-    if request.method == "POST":
-        password = generate_password_hash(request.form["password"])
-
-        conn = get_db()
-        conn.execute(
-            "UPDATE users SET password=? WHERE username=?",
-            (password, session["reset_user"])
-        )
-        conn.commit()
-        conn.close()
-
-        session.pop("reset_user")
-        flash("Password changed successfully.")
-        return redirect("/")
-
-    return render_template("reset_password.html")
 
 
 # ---------------- ADMIN DASHBOARD ----------------
