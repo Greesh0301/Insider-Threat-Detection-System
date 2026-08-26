@@ -23,9 +23,14 @@ except ImportError:
 
 
 SENSITIVE_FILES = {
-    "salary.xlsx", "payroll.xlsx", "employees.db",
-    "confidential.docx", "finance.xlsx", "secret.pdf"
+    "salary.xlsx",
+    "payroll.xlsx",
+    "employees.db",
+    "confidential.docx",
+    "finance.xlsx",
+    "secret.pdf"
 }
+
 
 _current_user = "Unknown"
 _services_started = False
@@ -33,11 +38,8 @@ _file_observer = None
 _previous_usb = set()
 
 
-def set_current_user(username):
-    """Tell the monitors which logged-in employee is being monitored."""
-    global _current_user
-    _current_user = username
 
+# ================= DATABASE =================
 
 def _db():
     conn = sqlite3.connect(DATABASE)
@@ -45,118 +47,229 @@ def _db():
     return conn
 
 
+
 def _now():
     now = datetime.now()
-    return now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
+    return (
+        now.strftime("%Y-%m-%d"),
+        now.strftime("%H:%M:%S")
+    )
 
+
+
+# ================= USER =================
+
+def set_current_user(username):
+    global _current_user
+    _current_user = username
+
+
+
+# ================= ACTIVITY =================
 
 def log_activity(username, activity, description, risk):
+
     conn = _db()
 
+    date, clock = _now()
+
     conn.execute("""
-        INSERT INTO activities
-        (username, activity, description, risk, activity_time)
-        VALUES (?, ?, ?, ?, ?)
-    """, (
+    INSERT INTO activity_logs
+    (
+        username,
+        activity,
+        details,
+        risk_level,
+        date,
+        time
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+    """,
+    (
         username,
         activity,
         description,
         risk,
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        date,
+        clock
     ))
 
     conn.commit()
     conn.close()
 
 
+
+# ================= ALERT =================
+
 def add_alert(username, alert_type, description, severity):
+
     date, clock = _now()
+
     conn = _db()
+
     conn.execute("""
-        INSERT INTO alerts
-        (username,alert_type,description,severity,status,date,time)
-        VALUES (?,?,?,?,?,?,?)
-    """, (username, alert_type, description, severity, "Pending", date, clock))
+    INSERT INTO alerts
+    (
+        username,
+        alert_type,
+        description,
+        severity,
+        status,
+        date,
+        time
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    """,
+    (
+        username,
+        alert_type,
+        description,
+        severity,
+        "Pending",
+        date,
+        clock
+    ))
+
     conn.commit()
     conn.close()
 
+
+
+# ================= RISK =================
 
 def update_risk(username):
-    """Calculate one simple risk score from the user's recent activity."""
+
     conn = _db()
+
     score = 0
 
-    score += conn.execute(
-        "SELECT COUNT(*) FROM login_logs WHERE username=? AND status='Failed'",
-        (username,)
+
+    score += conn.execute("""
+    SELECT COUNT(*)
+    FROM login_logs
+    WHERE username=?
+    AND status='Failed'
+    """,
+    (username,)
     ).fetchone()[0] * 10
 
-    score += conn.execute(
-        "SELECT COUNT(*) FROM alerts WHERE username=? AND severity='Medium'",
-        (username,)
+
+    score += conn.execute("""
+    SELECT COUNT(*)
+    FROM alerts
+    WHERE username=?
+    AND severity='Medium'
+    """,
+    (username,)
     ).fetchone()[0] * 5
 
-    score += conn.execute(
-        "SELECT COUNT(*) FROM alerts WHERE username=? AND severity='High'",
-        (username,)
+
+    score += conn.execute("""
+    SELECT COUNT(*)
+    FROM alerts
+    WHERE username=?
+    AND severity='High'
+    """,
+    (username,)
     ).fetchone()[0] * 15
 
-    score = min(score, 100)
-    level = "High" if score >= 80 else "Medium" if score >= 40 else "Low"
+
+    score = min(score,100)
+
+
+    if score >= 80:
+        level = "High"
+
+    elif score >= 40:
+        level = "Medium"
+
+    else:
+        level = "Low"
+
+
 
     conn.execute("""
-        INSERT INTO risk_scores(username,score,level,updated_on)
-        VALUES (?,?,?,?)
-    """, (username, score, level, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+    INSERT INTO risk_scores
+    (
+        username,
+        score,
+        level,
+        updated_on
+    )
+    VALUES (?, ?, ?, ?)
+    """,
+    (
+        username,
+        score,
+        level,
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ))
+
+
     conn.commit()
     conn.close()
 
 
-def log_login(username, status):
-    """Save login and generate alerts based on login rules."""
+
+# ================= LOGIN =================
+
+def log_login(username,status):
 
     now = datetime.now()
+
     ip = socket.gethostbyname(socket.gethostname())
+
     device = platform.node()
+
 
     conn = _db()
 
-    # Save login record
+
     conn.execute("""
-        INSERT INTO login_logs
-        (username, login_time, ip_address, device_name, status)
-        VALUES (?, ?, ?, ?, ?)
-    """, (
+    INSERT INTO login_logs
+    (
+        username,
+        login_time,
+        ip_address,
+        device_name,
+        status,
+        risk
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+    """,
+    (
         username,
         now.strftime("%Y-%m-%d %H:%M:%S"),
         ip,
         device,
-        status
+        status,
+        "Low"
     ))
+
 
     conn.commit()
 
 
-    # ================= SUCCESS LOGIN =================
 
     if status == "Success":
 
-        # Count previous failed attempts
+
         failed = conn.execute("""
-            SELECT COUNT(*)
-            FROM login_logs
-            WHERE username=?
-            AND status='Failed'
-        """, (username,)).fetchone()[0]
+        SELECT COUNT(*)
+        FROM login_logs
+        WHERE username=?
+        AND status='Failed'
+        """,
+        (username,)
+        ).fetchone()[0]
 
 
-        # Login after 9 PM = HIGH
         if now.hour >= 21:
 
             log_activity(
                 username,
                 "Late Login",
-                "User logged in after 9 PM",
+                "Login after 9 PM",
                 "High"
             )
 
@@ -168,241 +281,366 @@ def log_login(username, status):
             )
 
 
-        # 3 or more failed attempts before login = HIGH
         elif failed >= 3:
 
             log_activity(
                 username,
-                "Failed Login Pattern",
-                "Successful login after multiple failed attempts",
+                "Suspicious Login",
+                "Successful login after multiple failures",
                 "High"
             )
+
 
             add_alert(
                 username,
                 "Suspicious Login",
-                "Three or more failed login attempts detected",
+                "3 or more failed attempts",
                 "High"
             )
 
 
-        # 2 failed attempts before login = MEDIUM
         elif failed == 2:
 
             log_activity(
                 username,
-                "Failed Login Pattern",
-                "Successful login after two failed attempts",
+                "Suspicious Login",
+                "Login after two failures",
                 "Medium"
             )
+
 
             add_alert(
                 username,
                 "Suspicious Login",
-                "Two failed login attempts detected",
+                "Two failed attempts",
                 "Medium"
             )
 
 
-        # Normal login
         else:
 
             log_activity(
                 username,
                 "Login",
-                "User logged into the system",
+                "User logged into system",
                 "Low"
             )
 
 
-    # ================= FAILED LOGIN =================
-
-    else:
-
-        failed = conn.execute("""
-            SELECT COUNT(*)
-            FROM login_logs
-            WHERE username=?
-            AND status='Failed'
-        """, (username,)).fetchone()[0]
-
-
-        # 2 Failed Attempts = Medium
-        if failed == 2:
-
-            log_activity(
-                username,
-                "Failed Login",
-                "Two failed login attempts",
-                "Medium"
-            )
-
-            add_alert(
-                username,
-                "Failed Login",
-                "Two failed login attempts detected",
-                "Medium"
-            )
-
-
-        # 3+ Failed Attempts = High
-        elif failed >= 3:
-
-            log_activity(
-                username,
-                "Failed Login",
-                "Multiple failed login attempts",
-                "High"
-            )
-
-            add_alert(
-                username,
-                "Failed Login",
-                "Three or more failed login attempts detected",
-                "High"
-            )
-
 
     conn.close()
 
-
-    # Update user risk score
     update_risk(username)
 
 
-def save_file_event(username, action, path):
-    """Save a file-system event, activity entry and optional threat alert."""
-    filename = os.path.basename(path)
-    date, clock = _now()
 
-    conn = _db()
-    conn.execute("""
-        INSERT INTO file_logs
-        (username,file_name,file_path,action,date,time)
-        VALUES (?,?,?,?,?,?)
-    """, (username, filename, path, action, date, clock))
+# ================= FILE MONITOR =================
+
+def save_file_event(username,action,path):
+
+    filename=os.path.basename(path)
+
+    date,clock=_now()
+
+
+    conn=_db()
+
 
     conn.execute("""
-        INSERT INTO activity_logs
-        (username,activity,details,risk_level,date,time)
-        VALUES (?,?,?,?,?,?)
-    """, (username, action, filename, "Medium", date, clock))
+    INSERT INTO file_logs
+    (
+        username,
+        file_name,
+        file_path,
+        action,
+        date,
+        time
+    )
+    VALUES (?,?,?,?,?,?)
+    """,
+    (
+        username,
+        filename,
+        path,
+        action,
+        date,
+        clock
+    ))
+
+
+
+    conn.execute("""
+    INSERT INTO activity_logs
+    (
+        username,
+        activity,
+        details,
+        risk_level,
+        date,
+        time
+    )
+    VALUES (?,?,?,?,?,?)
+    """,
+    (
+        username,
+        action,
+        filename,
+        "Medium",
+        date,
+        clock
+    ))
+
+
     conn.commit()
+
 
     if filename.lower() in {x.lower() for x in SENSITIVE_FILES}:
+
         conn.execute("""
-            INSERT INTO alerts
-            (username,alert_type,description,severity,status,date,time)
-            VALUES (?,?,?,?,?,?,?)
-        """, (username, "Sensitive File",
-              f"{filename} accessed", "High", "Pending", date, clock))
-
-    conn.commit()
-    conn.close()
-    update_risk(username)
-
-
-def save_usb_event(username, device, action):
-    """Save USB insertion/removal and create a medium alert."""
-    date, clock = _now()
-    conn = _db()
-
-    conn.execute("""
-        INSERT INTO usb_logs
-        (username,device_name,action,date,time)
-        VALUES (?,?,?,?,?)
-    """, (username, device, action, date, clock))
-
-    conn.execute("""
-        INSERT INTO activity_logs
-        (username,activity,details,risk_level,date,time)
-        VALUES (?,?,?,?,?,?)
-    """, (username, "USB " + action, device, "Medium", date, clock))
-
-    conn.execute("""
         INSERT INTO alerts
-        (username,alert_type,description,severity,status,date,time)
+        (
+            username,
+            alert_type,
+            description,
+            severity,
+            status,
+            date,
+            time
+        )
         VALUES (?,?,?,?,?,?,?)
-    """, (username, "USB", f"USB Device {action}: {device}",
-          "Medium", "Pending", date, clock))
+        """,
+        (
+            username,
+            "Sensitive File",
+            filename+" accessed",
+            "High",
+            "Pending",
+            date,
+            clock
+        ))
+
 
     conn.commit()
     conn.close()
+
     update_risk(username)
 
+
+
+# ================= USB MONITOR =================
+
+def save_usb_event(username,device,action):
+
+    date,clock=_now()
+
+    conn=_db()
+
+
+    conn.execute("""
+    INSERT INTO usb_logs
+    (
+        username,
+        device_name,
+        action,
+        date,
+        time
+    )
+    VALUES (?,?,?,?,?)
+    """,
+    (
+        username,
+        device,
+        action,
+        date,
+        clock
+    ))
+
+
+    conn.execute("""
+    INSERT INTO activity_logs
+    (
+        username,
+        activity,
+        details,
+        risk_level,
+        date,
+        time
+    )
+    VALUES (?,?,?,?,?,?)
+    """,
+    (
+        username,
+        "USB "+action,
+        device,
+        "Medium",
+        date,
+        clock
+    ))
+
+
+    conn.commit()
+    conn.close()
+
+    update_risk(username)
+    # ================= USB MONITOR LOOP =================
 
 def _usb_loop():
-    """Check removable drives every two seconds."""
+
     global _previous_usb
 
     if psutil is None:
         return
 
     while True:
+
         current = {
-            part.device for part in psutil.disk_partitions(all=False)
+            part.device
+            for part in psutil.disk_partitions(all=False)
             if "removable" in part.opts.lower()
         }
 
+
         for device in current - _previous_usb:
-            save_usb_event(_current_user, device, "Inserted")
+            save_usb_event(
+                _current_user,
+                device,
+                "Inserted"
+            )
+
 
         for device in _previous_usb - current:
-            save_usb_event(_current_user, device, "Removed")
+            save_usb_event(
+                _current_user,
+                device,
+                "Removed"
+            )
+
 
         _previous_usb = current
+
         time.sleep(2)
 
 
+
+# ================= FILE MONITOR =================
+
 if Observer is not None:
+
     class FileHandler(FileSystemEventHandler):
-        def on_created(self, event):
-            if not event.is_directory:
-                save_file_event(_current_user, "File Created", event.src_path)
 
-        def on_modified(self, event):
-            if not event.is_directory:
-                save_file_event(_current_user, "File Modified", event.src_path)
+        def on_created(self,event):
 
-        def on_deleted(self, event):
             if not event.is_directory:
-                save_file_event(_current_user, "File Deleted", event.src_path)
+                save_file_event(
+                    _current_user,
+                    "File Created",
+                    event.src_path
+                )
 
-        def on_moved(self, event):
+
+        def on_modified(self,event):
+
             if not event.is_directory:
-                save_file_event(_current_user, "File Renamed", event.dest_path)
+                save_file_event(
+                    _current_user,
+                    "File Modified",
+                    event.src_path
+                )
+
+
+        def on_deleted(self,event):
+
+            if not event.is_directory:
+                save_file_event(
+                    _current_user,
+                    "File Deleted",
+                    event.src_path
+                )
+
+
+        def on_moved(self,event):
+
+            if not event.is_directory:
+                save_file_event(
+                    _current_user,
+                    "File Renamed",
+                    event.dest_path
+                )
+
+
+
+_file_observer = None
 
 
 def _file_loop():
-    """Watch the local monitored_folder for file changes."""
+
     global _file_observer
+
 
     if Observer is None:
         return
 
-    os.makedirs(WATCH_FOLDER, exist_ok=True)
+
+    os.makedirs(
+        WATCH_FOLDER,
+        exist_ok=True
+    )
+
+
     _file_observer = Observer()
-    _file_observer.schedule(FileHandler(), WATCH_FOLDER, recursive=True)
+
+    _file_observer.schedule(
+        FileHandler(),
+        WATCH_FOLDER,
+        recursive=True
+    )
+
+
     _file_observer.start()
+
 
     while True:
         time.sleep(1)
 
 
+
+
+# ================= START SERVICES =================
+
 def start_services():
-    """Start USB and file monitoring once when Flask starts."""
+
     global _services_started
+
+
     if _services_started:
         return
 
-    _services_started = True
-    threading.Thread(target=_usb_loop, daemon=True).start()
-    threading.Thread(target=_file_loop, daemon=True).start()
 
+    _services_started = True
+
+
+    threading.Thread(
+        target=_usb_loop,
+        daemon=True
+    ).start()
+
+
+    threading.Thread(
+        target=_file_loop,
+        daemon=True
+    ).start()
+
+
+
+# ================= STOP SERVICES =================
 
 def stop_services():
-    """Stop the file observer when the application is closed."""
+
     global _file_observer
+
+
     if _file_observer:
+
         _file_observer.stop()
+
         _file_observer.join(timeout=2)
