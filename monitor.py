@@ -482,6 +482,8 @@ def save_usb_event(username,device,action):
     conn.close()
 
     update_risk(username)
+
+    
     # ================= USB MONITOR LOOP =================
 
 def _usb_loop():
