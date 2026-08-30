@@ -640,15 +640,7 @@ placeholder="Search User or File...">
 type="date"
 id="dateFilter">
 
-<select id="actionFilter">
 
-<option value="">All Actions</option>
-
-<option value="Created">Created</option>
-
-<option value="Modified">Modified</option>
-
-<option value="Deleted">Deleted</option>
 
 
 </select>
@@ -812,7 +804,7 @@ function filterFile() {
 
     const searchValue = search.value.toLowerCase().trim();
     const dateValue = date.value;
-    const actionValue = action.value.toLowerCase().trim();
+    
 
     const rows = document.querySelectorAll("#fileTable tbody tr");
 
@@ -821,7 +813,7 @@ function filterFile() {
         if (row.cells.length < 7) return;
 
         const rowText = row.innerText.toLowerCase();
-        const rowAction = row.cells[4].textContent.toLowerCase().trim();
+    
         const rowDate = row.cells[5].textContent.trim();
 
         const matchSearch =
@@ -830,11 +822,9 @@ function filterFile() {
         const matchDate =
             dateValue === "" || rowDate === dateValue;
 
-        const matchAction =
-            actionValue === "" || rowAction === actionValue;
 
         row.style.display =
-            (matchSearch && matchDate && matchAction)
+            (matchSearch && matchDate )
             ? ""
             : "none";
     });
@@ -842,7 +832,7 @@ function filterFile() {
 
 search.addEventListener("keyup", filterFile);
 date.addEventListener("change", filterFile);
-action.addEventListener("change", filterFile);
+
 
 //=========================
 // PRINT
