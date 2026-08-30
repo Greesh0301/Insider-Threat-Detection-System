@@ -683,13 +683,6 @@ Detector
         </li>
 
         <li>
-            <a href="/settings">
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
-            </a>
-        </li>
-
-        <li>
             <a href="/logout">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Logout</span>
@@ -838,28 +831,7 @@ placeholder="Search Activity...">
         </tbody>
 
     </table>
-    <div class="bottom-section">
-
-    <!-- Threat Trend -->
-
-    <div class="chart-box">
-
-        <h2>Threat Trend</h2>
-
-        <canvas id="threatChart"></canvas>
-
-    </div>
-
-    <!-- User Activity -->
-
-    <div class="chart-box">
-
-        <h2>User Activity</h2>
-
-        <canvas id="userChart"></canvas>
-
-    </div>
-
+   
 </div>
 
 <div class="status-section">
@@ -945,76 +917,6 @@ row.style.display="none";
 
 });
 
-</script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js">
-
-
-
-const threatChart=new Chart(
-
-document.getElementById("threatChart"),
-
-{
-
-type:"line",
-
-data:{
-
-labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-
-datasets:[{
-
-label:"Threats",
-
-data:[2,4,5,3,8,6,4],
-
-borderColor:"#2d8cff",
-
-backgroundColor:"rgba(45,140,255,.25)",
-
-fill:true,
-
-tension:.4
-
-}]
-
-}
-
-});
-
-const userChart=new Chart(
-
-document.getElementById("userChart"),
-
-{
-
-type:"bar",
-
-data:{
-
-labels:["Login","USB","Files","Alerts"],
-
-datasets:[{
-
-data:[18,4,9,2],
-
-backgroundColor:[
-
-"#2d8cff",
-
-"#2ecc71",
-
-"#ff9f1c",
-
-"#ff4d4d"
-
-]
-
-}]
-
-}
-
-});
 
 </script>
 </body>

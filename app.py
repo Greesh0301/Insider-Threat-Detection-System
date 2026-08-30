@@ -328,38 +328,6 @@ def edit_user(id):
     return f"Edit User ID: {id}"
 
 
-# ---------------- SETTINGS ----------------
-@app.route("/settings", methods=["GET", "POST"])
-def settings():
-    if not login_required():
-        return redirect("/")
-
-    conn = get_db()
-
-    if request.method == "POST":
-        values = (
-            1 if "usb_monitor" in request.form else 0,
-            1 if "file_monitor" in request.form else 0,
-            1 if "login_monitor" in request.form else 0,
-            1 if "email_alert" in request.form else 0,
-            1 if "backup" in request.form else 0,
-            request.form["scan_interval"]
-        )
-        conn.execute("""
-            UPDATE settings
-            SET usb_monitor=?,file_monitor=?,login_monitor=?,
-                email_alert=?,backup=?,scan_interval=?
-            WHERE id=1
-        """, values)
-        conn.commit()
-
-    settings_row = conn.execute(
-        "SELECT * FROM settings WHERE id=1"
-    ).fetchone()
-    conn.close()
-
-    return page("settings.html", settings=settings_row)
-
 
 # ---------------- EMPLOYEE PAGES ----------------
 @app.route("/employee_activity")
